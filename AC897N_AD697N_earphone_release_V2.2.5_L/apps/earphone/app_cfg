@@ -1,0 +1,94 @@
+
+
+#------------------------ event config --------------------------#
+SYS_EVENT_CFG_DEFINE += \
+-DEVENT_HANDLER_NUM_CONFIG=2 \
+-DEVENT_TOUCH_ENABLE_CONFIG=0 \
+-DEVENT_POOL_SIZE_CONFIG=512 \
+-DCONFIG_EVENT_KEY_MAP_ENABLE=0 \
+
+#------------------------ timer config --------------------------#
+SYS_TIMER_CFG_DEFINE += \
+-DTIMER_POOL_NUM_CONFIG=15 \
+
+#----------------------- app_core config ------------------------#
+SYS_APP_CORE_CFG_DEFINE += \
+-DAPP_ASYNC_POOL_NUM_CONFIG=0 \
+
+#------------------------- vm config ---------------------------#
+SYS_VM_CFG_DEFINE += \
+-DVM_MAX_SIZE_CONFIG=16*1024 \
+-DVM_ITEM_MAX_NUM=128 \
+
+#------------------------- vfs config ---------------------------#
+SYS_VFS_CFG_DEFINE += \
+-DUSE_SDFILE_NEW=1 \
+-DSDFILE_STORAGE=0 \
+-DVFS_FILE_POOL_NUM_CONFIG=1 \
+-DFS_VERSION=0x020001 \
+-DFATFS_VERSION=0x020101 \
+-DSDFILE_VERSION=0x020000
+
+AUDIO_CFG_DEFINE += \
+-DAUDIO_REC_LITE \
+-DAUDIO_DEC_LITE \
+-DAUDIO_REC_POOL_NUM=1 \
+-DAUDIO_DEC_POOL_NUM=3 \
+-DSBC_CUSTOM_DECODER_BUF_SIZE=1 \
+#-DAEC_MALLOC_ENABLE=1 \
+
+APP_FEATURE_DEFINE += \
+-DCONFIG_TWS_ENABLE \
+-DCONFIG_EARPHONE_CASE_ENABLE \
+
+BTCTRLER_CFG_DEFINE += \
+-DCONFIG_BTCTRLER_TASK_DEL_ENABLE \
+
+TWS_ENABLE = y
+
+
+ifeq ($(CPU),br30)
+SYS_VFS_CFG_DEFINE += \
+-DVFS_ENABLE=1
+
+export CONFIG_USB_ENABLE = y
+export USB_SLAVE_SUPPORT_MSD = y
+export CONFIG_SD_ENABLE = y
+
+else
+SYS_VFS_CFG_DEFINE += \
+-DVFS_ENABLE=0
+
+export CONFIG_USB_ENABLE = n
+export USB_SLAVE_SUPPORT_MSD = n
+export CONFIG_SD_ENABLE = n
+endif
+
+
+CONFIG_UI_ENABLE  = n
+
+
+
+
+CC_DEFINE += \
+-DTCFG_APP_BT_EN=1
+
+
+ifeq ($(CPU),br30)
+OMIT_FILES = $(ROOT)/cpu/br30/tools/QCY \
+			 $(wildcard $(ROOT)/apps/$(APP_CASE)/board/$(CPU)/*fpga*) \
+			 $(wildcard $(ROOT)/apps/$(APP_CASE)/board/$(CPU)/*T8*) \
+
+ifeq ($(SoC),br30c)
+OMIT_FILES += \
+            $(wildcard $(ROOT)/apps/$(APP_CASE)/board/$(CPU)/*ac89*) \
+            $(wildcard $(ROOT)/apps/$(APP_CASE)/board/$(CPU)/*ad69*) \
+
+else 
+OMIT_FILES += \
+			 $(wildcard $(ROOT)/apps/$(APP_CASE)/board/$(CPU)/*ac699*) \
+
+endif
+
+endif
+
